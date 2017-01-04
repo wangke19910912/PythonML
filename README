@@ -1,12 +1,12 @@
 一个python项目,使用MatplotLib可视化实现了如下算法
-1.KNN         2016/1/4
-2.Decision Tree
-3.Naive Bayesian
-4.Logistic Regression
-5.SVM
-6.AdaBoost
-7.Linear Regression
+1.KNN         2016/1/4 ~ 2015/1/4
+2.Decision Tree 1day
+3.Naive Bayesian 2day
+4.Logistic Regression 2day
+5.SVM 2day
+6.AdaBoost 3 day
+7.Linear Regression 2day
 8.GBDT
-9.K-Means
+9.K-Means 1 day
 10.PCA
 11.SVD
