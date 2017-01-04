@@ -1,0 +1,16 @@
+.classpath
+.project
+.settings/
+target/
+classpath
+.project
+.settings/
+target/
+logs/
+*.log*
+*.iml
+*.ipr
+*.iws
+.idea/
+work/
+output/
