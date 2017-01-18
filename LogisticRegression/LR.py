@@ -4,7 +4,7 @@ from numpy import *
 def loadDataSet():
     dataMat = []
     labelMat = []
-    fr = open('testSet.txt')
+    fr = open('trainSet.txt')
     for line in fr.readlines():
         lineArr = line.strip().split()
         dataMat.append([1.0, float(lineArr[0]), float(lineArr[1])])

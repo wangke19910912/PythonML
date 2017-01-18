@@ -23,7 +23,7 @@ def clipAlpha(aj,H,L):
         aj = L
     return aj
 
-dataArr,labelArr = loadDataSet('testSet.txt')
+dataArr,labelArr = loadDataSet('trainSet.txt')
 
 
 def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
@@ -56,11 +56,15 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
             # 3) yi*f(i) <= 1 and alpha == C (between the boundary,在容忍度之外)
             ## violate KKT condition
             # because y[i]*E_i = y[i]*f(i) - y[i]^2 = y[i]*f(i) - 1, so
+            #y[i]*E_i<0 这个点错误的分类,这个
             # 1) if y[i]*E_i < 0, so yi*f(i) < 1, if alpha < C, violate!(alpha = C will be correct)
+            #正确分类,
             # 2) if y[i]*E_i > 0, so yi*f(i) > 1, if alpha > 0, violate!(alpha = 0 will be correct)
+            #支持向量,不需要优化
             # 3) if y[i]*E_i = 0, so yi*f(i) = 1, it is on the boundary, needless optimized
 
             #对违反KKT条件的数值进行优化,首先遍历在分隔边界上的点
+            #
             if ((labelMat[i]*Ei < -toler) and (alphas[i] < C)) or ((labelMat[i]*Ei > toler) and (alphas[i] > 0)):
                 #从剩余的元素中随机选择一个j,计算其误差
                 j = selectJrand(i,m)
@@ -68,7 +72,7 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
                 Ej = fXj - float(labelMat[j])
                 alphaIold = alphas[i].copy()
                 alphaJold = alphas[j].copy()
-                #从给定的
+                #保证alpha在O和C之间
                 if (labelMat[i] != labelMat[j]):
                     L = max(0, alphas[j] - alphas[i])
                     H = min(C, C + alphas[j] - alphas[i])
@@ -80,11 +84,14 @@ def smoSimple(dataMatIn, classLabels, C, toler, maxIter):
                 if eta >= 0: print "eta>=0"; continue
                 alphas[j] -= labelMat[j]*(Ei - Ej)/eta
                 alphas[j] = clipAlpha(alphas[j],H,L)
+
+                #检查是否有轻微改变,如果有则退出循环
                 if (abs(alphas[j] - alphaJold) < 0.00001): print "j not moving enough"; continue
                 alphas[i] += labelMat[j]*labelMat[i]*(alphaJold - alphas[j])#update i by the same amount as j
                 #the update is in the oppostie direction
                 b1 = b - Ei- labelMat[i]*(alphas[i]-alphaIold)*dataMatrix[i,:]*dataMatrix[i,:].T - labelMat[j]*(alphas[j]-alphaJold)*dataMatrix[i,:]*dataMatrix[j,:].T
                 b2 = b - Ej- labelMat[i]*(alphas[i]-alphaIold)*dataMatrix[i,:]*dataMatrix[j,:].T - labelMat[j]*(alphas[j]-alphaJold)*dataMatrix[j,:]*dataMatrix[j,:].T
+                #计算常数B,并设置
                 if (0 < alphas[i]) and (C > alphas[i]): b = b1
                 elif (0 < alphas[j]) and (C > alphas[j]): b = b2
                 else: b = (b1 + b2)/2.0
